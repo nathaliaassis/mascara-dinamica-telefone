@@ -1,38 +1,13 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import './App.css';
 
 function App() {
   const [tel, setTel] = useState('');
-  const [maskedTel, setMaskedTel] = useState('');
-
-  useEffect(() => {
-    setTel(maskedTel)
-  }, [maskedTel]);
-
-  function mask(number) {
-    number.replace(/\D/g, "")
-    try {
-      //limita o numero de dígitos dentro do input
-      if (number.length > 16) {
-        const maxInputLength = number.slice(0, 16);;
-        setTel(maxInputLength);
-      }
-    } catch (error) {
-      console.log(error)
-    } finally {
-      setTimeout(function () {
-        //faz a formatação do número digitado
-        var v = mphone(tel);
-        if (v !== tel) {
-          setMaskedTel(v);
-        }
-      }, 1);
-    }
-  }
 
   const mphone = useCallback((v) => {
     // se não for numero o campo apaga o digito
-    let r = v.replace(/\D/g, "");
+    var r = v.replace(/\D/g, "");
+    r = r.replace(/[A-Za-z\s]/, "");
     r = r.replace(/^0/, "");
     if (r.length > 10) {
       // formatação para 9 dígitos
@@ -49,6 +24,35 @@ function App() {
     return r;
   }, []);
 
+  // const handleChangePhone = useCallback((value) => {
+  //   let numberMasked;
+  //   try {
+  //     setTel(value);
+  //     numberMasked = mphone(value);
+  //   } catch (error) {
+  //     console.log(error)
+  //   } finally {
+  //     if (numberMasked.length > 16) {
+  //       const maxInputLength = numberMasked.slice(0, 16);
+  //       setTel(maxInputLength);
+  //     }
+  //     setTel(numberMasked)
+  //   }
+  // }, []);
+
+  const handleChangePhone = useCallback((value) => {
+    try {
+      setTel(value);
+    } catch (error) {
+      console.log(error)
+    } finally {
+      if (value.length > 11) {
+        setTel(mphone(value.slice(0, 11)));
+      }
+      setTel(mphone(value))
+    }
+  }, []);
+  console.log(tel);
   return (
     <div className="App">
       <header className="App-header">
@@ -60,9 +64,7 @@ function App() {
           id="phone"
           name="phone"
           value={tel}
-          onChange={e => setTel(e.target.value)}
-          onKeyUp={(e) => mask(e.target.value)}
-          onBlur={(e) => mask(e.target.value)}
+          onChange={e => handleChangePhone(e.target.value.replace(/\D/g, ""))}
         />
       </header>
     </div >
