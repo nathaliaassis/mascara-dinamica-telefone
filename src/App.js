@@ -13,7 +13,7 @@ function App() {
       // formatação para 9 dígitos
       r = r.replace(/^(\d\d)(\d{1})(\d{4})(\d{4}).*/, "($1) $2 $3-$4");
     }
-    else if (r.length > 5) {
+    else if (r.length > 6) {
       // formatação para 8 dígitos
       r = r.replace(/^(\d\d)(\d{4})(\d{0,4}).*/, "($1) $2-$3");
     }
@@ -24,35 +24,19 @@ function App() {
     return r;
   }, []);
 
-  // const handleChangePhone = useCallback((value) => {
-  //   let numberMasked;
-  //   try {
-  //     setTel(value);
-  //     numberMasked = mphone(value);
-  //   } catch (error) {
-  //     console.log(error)
-  //   } finally {
-  //     if (numberMasked.length > 16) {
-  //       const maxInputLength = numberMasked.slice(0, 16);
-  //       setTel(maxInputLength);
-  //     }
-  //     setTel(numberMasked)
-  //   }
-  // }, []);
-
   const handleChangePhone = useCallback((value) => {
     try {
-      setTel(value);
+      setTel(value)
     } catch (error) {
       console.log(error)
     } finally {
       if (value.length > 11) {
-        setTel(mphone(value.slice(0, 11)));
+        setTel(tel.slice(0, 11));
       }
-      setTel(mphone(value))
+      setTel(mphone(value));
     }
-  }, []);
-  console.log(tel);
+  }, [mphone, tel]);
+
   return (
     <div className="App">
       <header className="App-header">
